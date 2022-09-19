@@ -12,4 +12,4 @@ jobs:
       - name: build
         run: docker build -t test -f dockerfile .
       - name: test
-        run: docker run -i --rm test
+        run: docker run -i --rm test --filter "Category=local | Category=internet"
