@@ -12,4 +12,6 @@ jobs:
       - name: build
         run: docker build -t test -f dockerfile .
       - name: test
-        run: docker run -i --rm test --filter "Category=local | Category=internet"
+        run: docker run -v "$RUNNER_TEMP:/mnt/results" -i --rm test --filter "Category=local | Category=internet"
+      - name: display TestExecution.json content
+        run: cat $RUNNER_TEMP/TestExecution.json

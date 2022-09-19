@@ -1,0 +1,6 @@
+{
+  "livingDocGenerator": {
+    "enabled": true,
+    "filePath": "../mnt/results/TestExecution.json"
+  }
+}
