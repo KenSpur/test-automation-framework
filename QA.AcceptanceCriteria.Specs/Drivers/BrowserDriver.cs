@@ -28,11 +28,14 @@ public class BrowserDriver : IDisposable
     private IWebDriver CreateWebDriver()
     {
         //We use the Chrome browser
-        var chromeDriverService = ChromeDriverService.CreateDefaultService();
+        var driverService = ChromeDriverService.CreateDefaultService();
 
-        var chromeOptions = new ChromeOptions();
+        var options = new ChromeOptions();
 
-        var chromeDriver = new ChromeDriver(chromeDriverService, chromeOptions);
+        options.AddArgument("--headless");
+        options.AddArgument("--no-sandbox");
+
+        var chromeDriver = new ChromeDriver(driverService, options);
 
         return chromeDriver;
     }
