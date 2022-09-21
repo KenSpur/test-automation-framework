@@ -1,6 +1,6 @@
 {
   "livingDocGenerator": {
     "enabled": true,
-    "filePath": "/mnt/results/TestExecution.json"
+    "filePath": "/mnt/pipeline/temp/TestExecution_{ProcessId}_{ThreadId}_{Now}.json"
   }
 }
