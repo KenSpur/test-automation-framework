@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 
-namespace QA.AcceptanceCriteria.Specs.PageObjects;
+namespace QA.Drivers.Web.PageObjects;
 
 public class ExamplePageObject : IDisposable
 {
@@ -24,6 +24,7 @@ public class ExamplePageObject : IDisposable
 
     public void Dispose()
     {
+        _webDriver.Close();
         _webDriver.Dispose();
     }
 }
