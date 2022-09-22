@@ -1,6 +1,6 @@
 {
   "livingDocGenerator": {
     "enabled": true,
-    "filePath": "{CurrentDirectory}/TestExecution_{Now}.json"
+    "filePath": "/mnt/out/TestExecution_{Now}.json"
   }
 }

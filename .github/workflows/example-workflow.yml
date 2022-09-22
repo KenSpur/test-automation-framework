@@ -10,13 +10,20 @@ jobs:
     steps:  
       - uses: actions/checkout@v3
       - name: Build image
-        run: docker build -t test -f dockerfile .
+        run: docker build -t test-framework -f dockerfile .
       - name: Run tests
         run: |
           artifactPath="${{ github.workspace }}/artifact"
           mkdir -p $artifactPath
 
-          docker run -v "$artifactPath:/mnt/out" -i --rm test --filter "Category=local | Category=internet & Category!=intranet"
+          echo "Run local tests"
+          docker run -v "$artifactPath:/mnt/out" --rm test-framework --filter "Category=local"
+
+          echo "Run internet tests"
+          docker run -v "$artifactPath:/mnt/out" --rm test-framework --filter "Category=internet"
+
+          echo "Generate living doc"
+          docker run -v "$artifactPath:/mnt/out" --rm test-framework --run-tests false --generate-doc true
 
           echo "artifactPath=$artifactPath" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
