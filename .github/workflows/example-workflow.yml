@@ -20,5 +20,5 @@ jobs:
           echo "artifactPath=${{ github.workspace }}/artifact" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
         with:
-          name: artifact
+          name: artifact-${{github.run_number}}
           path: ${{ env.artifactPath }}
