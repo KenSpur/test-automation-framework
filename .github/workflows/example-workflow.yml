@@ -12,6 +12,6 @@ jobs:
       - name: build
         run: docker build -t test -f dockerfile .
       - name: test
-        run: docker run -v "$RUNNER_TEMP:/mnt/pipeline/temp" -i --rm test --filter "Category=local | Category=internet & Category!=intranet"
+        run: docker run -v "$RUNNER_TEMP:/mnt/out" -i --rm test --filter "Category=local | Category=internet & Category!=intranet"
       - name: display $RUNNER_TEMP content
         run: ls -a $RUNNER_TEMP

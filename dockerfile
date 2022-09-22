@@ -24,6 +24,10 @@ WORKDIR /app
  && apt-get purge --auto-remove -y curl \
  && rm -rf /var/lib/apt/lists/*
 
+# Install dotnet tools
+RUN dotnet new tool-manifest
+RUN dotnet tool install SpecFlow.Plus.LivingDoc.CLI
+
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /app
 
@@ -36,7 +40,12 @@ RUN dotnet publish -c Release -o out
 
 # Build runtime image
 FROM base as final
+
 WORKDIR /app
 COPY --from=build /app/out/ .
 
-ENTRYPOINT ["dotnet", "test", "QA.AcceptanceCriteria.Specs.dll"]
+COPY entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT [ "sh", "entrypoint.sh" ]
+CMD [""]
