@@ -13,12 +13,13 @@ jobs:
         run: docker build -t test -f dockerfile .
       - name: Run tests
         run: |
-          mkdir -p ${{ github.workspace }}/artifact
+          artifactPath="${{ github.workspace }}/artifact"
+          mkdir -p $artifactPath
 
-          docker run -v "${{ github.workspace }}/artifact:/mnt/out" -i --rm test --filter "Category=local | Category=internet & Category!=intranet"
+          docker run -v "$artifactPath:/mnt/out" -i --rm test --filter "Category=local | Category=internet & Category!=intranet"
 
-          echo "artifactPath=${{ github.workspace }}/artifact" >> $GITHUB_ENV
+          echo "artifactPath=$artifactPath" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3
         with:
-          name: artifact-${{github.run_number}}
+          name: artifact-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
           path: ${{ env.artifactPath }}
