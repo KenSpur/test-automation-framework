@@ -12,7 +12,7 @@ Scenario: This should be an example
 Scenario: example.com should be an example
 	Given we surf to 'https://example.com'
 	When we view the page title
-	Then we should see example
+	Then it should contain the word 'example'
 
 @Intranet @NTR-364
 Scenario: kubernetes driver should be able to list namespaces

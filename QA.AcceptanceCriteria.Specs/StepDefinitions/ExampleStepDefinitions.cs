@@ -70,12 +70,12 @@ public sealed class ExampleStepDefinitions
         _scenarioContext[ValidationResult].Should().Be(true);
     }
 
-    [Then("we should see example")]
-    public void ThenShouldContainExample()
+    [Then("it should contain the word '(.*)'")]
+    public void ThenShouldContain(string word)
     {
         _scenarioContext[PageTitleValue]
             .As<string>().ToLower()
-            .Should().Contain("example");
+            .Should().Contain(word);
     }
 
     [Then("we get a list of namespaces greater than '(.*)'")]
