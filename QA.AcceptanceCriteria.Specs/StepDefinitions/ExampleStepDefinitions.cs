@@ -13,9 +13,9 @@ public sealed class ExampleStepDefinitions
     private readonly Lazy<ExamplePageObject> _examplePageObjectLazy;
     private readonly Lazy<KubernetesDriver> _kubernetesDriverLazy;
 
-    private static string ValidationResult => "ValidationResult";
-    private static string PageTitleValue => "PageTitleValue";
-    private static string Namespaces => "Namespaces";
+    private static string ValidationResult => nameof(ValidationResult);
+    private static string PageTitleValue => nameof(PageTitleValue);
+    private static string Namespaces => nameof(Namespaces);
 
     public ExampleStepDefinitions(ScenarioContext scenarioContext, 
         ExampleDriver exampleDriver, 
