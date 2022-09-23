@@ -42,5 +42,6 @@ fi
 if [ "$generateDoc" = true ]
 then
       echo "\nStarting LivingDoc generation"
-      dotnet tool run livingdoc test-assembly QA.AcceptanceCriteria.Specs.dll -t /mnt/out/TestExecution_*.json --output /mnt/out
+      dotnet tool run livingdoc test-assembly QA.AcceptanceCriteria.Specs.dll --output-type JSON --output /mnt/out
+      dotnet tool run livingdoc feature-data /mnt/out/FeatureData.json -t /mnt/out/TestExecution_*.json --output /mnt/out
 fi
