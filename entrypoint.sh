@@ -3,6 +3,9 @@
 # exit when any command fails
 set -e
 
+## set env variables
+export CHROME_DRIVER_OPTIONS__OPTION_ARGUMENTS="--headless --no-sandbox"
+
 # set defaults
 generateDoc=false
 runTests=true
