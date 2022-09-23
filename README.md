@@ -19,7 +19,7 @@ Run tests not of category webdriver and kubernetes
 dotnet test --filter "Category!=webdriver & Category!=kubernetes"
 ```
 
-## Webdriver tests
+## Tests requiring a webdriver (Selenium)
 
 [Install chrome](https://www.google.com/intl/nl/chrome/)
 
