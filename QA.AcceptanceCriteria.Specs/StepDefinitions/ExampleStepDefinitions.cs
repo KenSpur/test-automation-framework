@@ -6,7 +6,7 @@ using QA.Drivers.Web.PageObjects;
 namespace QA.AcceptanceCriteria.Specs.StepDefinitions;
 
 [Binding]
-public sealed class ExampleStepDefinitions
+public sealed class ExampleStepDefinitions : IDisposable
 {
     private readonly ScenarioContext _scenarioContext;
     private readonly ExampleDriver _exampleDriver;
@@ -84,5 +84,11 @@ public sealed class ExampleStepDefinitions
         _scenarioContext[Namespaces]
             .As<IEnumerable<V1Namespace>>()
             .Count().Should().BeGreaterThan(number);
+    }
+
+    public void Dispose()
+    {
+        if(_examplePageObjectLazy.IsValueCreated)
+            _examplePageObjectLazy.Value.Dispose();
     }
 }
