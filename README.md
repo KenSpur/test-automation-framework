@@ -10,6 +10,7 @@
 - [github actions](https://github.com/features/actions) CI/CD pipelines
 
 ## Getting started (run tests locally)
+[Install dotnet](https://learn.microsoft.com/en-us/dotnet/core/install/windows?tabs=net60)
 
 ## Tests without prerequisites
 
