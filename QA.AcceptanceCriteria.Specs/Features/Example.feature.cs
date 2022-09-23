@@ -83,12 +83,12 @@ namespace QA.AcceptanceCriteria.Specs.Features
         [Xunit.SkippableFactAttribute(DisplayName="This should be an example")]
         [Xunit.TraitAttribute("FeatureTitle", "Example")]
         [Xunit.TraitAttribute("Description", "This should be an example")]
-        [Xunit.TraitAttribute("Category", "Local")]
+        [Xunit.TraitAttribute("Category", "local")]
         [Xunit.TraitAttribute("Category", "NTR-364")]
         public void ThisShouldBeAnExample()
         {
             string[] tagsOfScenario = new string[] {
-                    "Local",
+                    "local",
                     "NTR-364"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("This should be an example", null, tagsOfScenario, argumentsOfScenario, featureTags);
@@ -118,12 +118,14 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.SkippableFactAttribute(DisplayName="example.com should be an example")]
         [Xunit.TraitAttribute("FeatureTitle", "Example")]
         [Xunit.TraitAttribute("Description", "example.com should be an example")]
-        [Xunit.TraitAttribute("Category", "Internet")]
+        [Xunit.TraitAttribute("Category", "internet")]
+        [Xunit.TraitAttribute("Category", "webdriver")]
         [Xunit.TraitAttribute("Category", "NTR-364")]
         public void Example_ComShouldBeAnExample()
         {
             string[] tagsOfScenario = new string[] {
-                    "Internet",
+                    "internet",
+                    "webdriver",
                     "NTR-364"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("example.com should be an example", null, tagsOfScenario, argumentsOfScenario, featureTags);
@@ -153,12 +155,14 @@ this.ScenarioInitialize(scenarioInfo);
         [Xunit.SkippableFactAttribute(DisplayName="kubernetes driver should be able to list namespaces")]
         [Xunit.TraitAttribute("FeatureTitle", "Example")]
         [Xunit.TraitAttribute("Description", "kubernetes driver should be able to list namespaces")]
-        [Xunit.TraitAttribute("Category", "Intranet")]
+        [Xunit.TraitAttribute("Category", "intranet")]
+        [Xunit.TraitAttribute("Category", "kubernetes")]
         [Xunit.TraitAttribute("Category", "NTR-364")]
         public void KubernetesDriverShouldBeAbleToListNamespaces()
         {
             string[] tagsOfScenario = new string[] {
-                    "Intranet",
+                    "intranet",
+                    "kubernetes",
                     "NTR-364"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("kubernetes driver should be able to list namespaces", null, tagsOfScenario, argumentsOfScenario, featureTags);
