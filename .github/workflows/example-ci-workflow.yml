@@ -7,27 +7,24 @@ on:
       - '**/example-test-runner-workflow.yml'
 
 env:
-  ARTIFACT_SUFFIX: ${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
   IMAGE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/test-framework:ci-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
 
 jobs:
-  build:
+  build_and_push:
 
     runs-on: ubuntu-latest
 
     steps:  
       - uses: actions/checkout@v3
-      - name: 'Login via Azure CLI'
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 'build & push container'
+      - name: Login docker
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-      - run: |
+
+      - name: Build & push image ${{ env.IMAGE }}
+        run: |
           docker build --tag ${{ env.IMAGE }} --file dockerfile .
           docker push ${{ env.IMAGE }}
