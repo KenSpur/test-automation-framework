@@ -1,0 +1,187 @@
+name: Example test runner workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        required: true
+        type: string
+
+env:
+  LOCAL_TESTS_ARTIFACT: run-local-tests-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+  INTERNET_TESTS_ARTIFACT: run-internet-tests-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+  INTRANET_TESTS_ARTIFACT: run-intranet-tests-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+  COMPILED_RESULTS_ARTIFACT: compiled-results-${{ github.run_id }}-${{ github.run_number }}-${{ github.run_attempt }}
+  IMAGE: ${{ secrets.REGISTRY_LOGIN_SERVER }}/test-framework:${{ inputs.tag }}
+
+jobs:
+  run-local-tests:
+  
+    runs-on: ubuntu-latest
+
+    steps:  
+      - name: Login docker
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Pull ${{ env.IMAGE }}
+        run: docker pull ${{ env.IMAGE }}
+
+      - name: Run tests
+        run: |
+          artifactPath="${{ runner.temp }}/artifact"
+          echo "artifactPath=$artifactPath" >> $GITHUB_ENV
+
+          echo "Run local tests"
+          docker run \
+            --volume "$artifactPath:/mnt/out" \
+            --rm ${{ env.IMAGE }} \
+            --filter "Category=local"
+
+      - name: Upload artifact ${{ env.LOCAL_TESTS_ARTIFACT }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.LOCAL_TESTS_ARTIFACT }}
+          path: ${{ env.artifactPath }}
+
+  run-internet-tests:
+
+    runs-on: ubuntu-latest
+
+    steps:  
+      - name: Login docker
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Pull ${{ env.IMAGE }}
+        run: docker pull ${{ env.IMAGE }}
+
+      - name: Run tests
+        run: |
+          artifactPath="${{ runner.temp }}/artifact"
+          echo "artifactPath=$artifactPath" >> $GITHUB_ENV
+
+          echo "Run internet tests"
+          docker run \
+            --volume "$artifactPath:/mnt/out" \
+            --rm ${{ env.IMAGE }} \
+            --filter "Category=internet"
+
+      - name: Upload artifact ${{ env.INTERNET_TESTS_ARTIFACT }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.INTERNET_TESTS_ARTIFACT }}
+          path: ${{ env.artifactPath }}
+
+  run-intranet-tests:
+
+    runs-on: [self-hosted]
+
+    steps:  
+      - name: Login docker
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Pull ${{ env.IMAGE }}
+        run: docker pull ${{ env.IMAGE }}
+
+      - name: Login azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Get kube config
+        run: |
+          configPath="${{ runner.temp }}/config"
+          echo "configPath=$configPath" >> $GITHUB_ENV
+
+          az aks get-credentials \
+            --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} \
+            --name ${{ secrets.AKS_NAME }} \
+            --file $configPath
+
+      - name: Run tests
+        continue-on-error: true
+        run: |
+          artifactPath="${{ runner.temp }}/artifact"
+          echo "artifactPath=$artifactPath" >> $GITHUB_ENV
+
+          echo "Run intranet tests"
+          docker run \
+            --volume "$artifactPath:/mnt/out" \
+            --volume "${{ env.configPath }}:/mnt/config" \
+            --env KUBERNETES_DRIVER_OPTIONS__CONFIG_PATH=/mnt/config \
+            --rm ${{ env.IMAGE }} \
+            --filter "Category=intranet"
+
+      - name: Upload artifact ${{ env.INTRANET_TESTS_ARTIFACT }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.INTRANET_TESTS_ARTIFACT }}
+          path: ${{ env.artifactPath }}
+
+      - name: Clean temp directory
+        run: rm -rf *
+        working-directory: ${{ runner.temp }}
+  
+  compile-results:
+    needs: [run-local-tests, run-internet-tests, run-intranet-tests]
+
+    runs-on: ubuntu-latest
+    
+    steps:  
+      - name: Download artifact ${{ env.LOCAL_TESTS_ARTIFACT }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.LOCAL_TESTS_ARTIFACT }}
+          path: ${{ runner.temp }}/artifact
+
+      - name: Download artifact ${{ env.INTERNET_TESTS_ARTIFACT }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.INTERNET_TESTS_ARTIFACT }}
+          path: ${{ runner.temp }}/artifact
+
+      - name: Download artifact ${{ env.INTRANET_TESTS_ARTIFACT }}
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.INTRANET_TESTS_ARTIFACT }}
+          path: ${{ runner.temp }}/artifact
+
+      - name: Login docker
+        uses: azure/docker-login@v1  
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      
+      - name: Pull ${{ env.IMAGE }}
+        run: docker pull ${{ env.IMAGE }}
+        
+      - name: Compile results
+        run: |
+          artifactPath="${{ runner.temp }}/artifact"
+          echo "artifactPath=$artifactPath" >> $GITHUB_ENV
+
+          echo "Generate living doc"
+          docker run \
+            --volume "$artifactPath:/mnt/out" \
+            --rm ${{ env.IMAGE }} \
+            --run-tests false \
+            --generate-doc true
+        
+      - name: Upload artifact ${{ env.COMPILED_RESULTS_ARTIFACT }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.COMPILED_RESULTS_ARTIFACT }}
+          path: ${{ env.artifactPath }}
