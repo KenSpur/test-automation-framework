@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QA.AcceptanceCriteria.Specs.Drivers;
+using QA.Drivers.Github;
+using QA.Drivers.Github.Options;
 using QA.Drivers.Kubernetes;
 using QA.Drivers.Kubernetes.Options;
 using QA.Drivers.Web;
@@ -21,11 +23,14 @@ internal static class DependencyInjectionSupport
 
         services.AddTransient<ExampleDriver>();
 
-        services.AddWebDriverAndPageObjects(
-            options => config.GetSection(ChromeDriverOptions.Key).Bind(options));
+        services.AddGithubDriver(
+            options => config.GetSection(GithubDriverOptions.Key).Bind(options));
 
         services.AddKubernetesDriver(
             options => config.GetSection(KubernetesDriverOptions.Key).Bind(options));
+
+        services.AddWebDriverAndPageObjects(
+            options => config.GetSection(ChromeDriverOptions.Key).Bind(options));
 
         return services;
     }
