@@ -32,6 +32,7 @@ jobs:
         run: docker pull ${{ env.IMAGE }}
 
       - name: Run tests
+        continue-on-error: true
         run: |
           artifactPath="${{ runner.temp }}/artifact"
           echo "artifactPath=$artifactPath" >> $GITHUB_ENV
@@ -64,6 +65,7 @@ jobs:
         run: docker pull ${{ env.IMAGE }}
 
       - name: Run tests
+        continue-on-error: true
         run: |
           artifactPath="${{ runner.temp }}/artifact"
           echo "artifactPath=$artifactPath" >> $GITHUB_ENV
